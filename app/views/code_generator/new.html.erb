@@ -1,0 +1,12 @@
+<h1>Code Generator</h1>
+<%= form_tag(code_generator_generate_path, method: :post) do %>
+  <%= label_tag(:description, 'Description:') %>
+  <%= text_area_tag(:description) %>
+  <%= submit_tag('Generate Code') %>
+<% end %>
+
+<!-- app/views/code_generator/generate.html.erb -->
+<% if @generated_code %>
+  <h2>Generated Code</h2>
+  <%= @generated_code %>
+<% end %>
