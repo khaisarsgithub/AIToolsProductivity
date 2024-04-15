@@ -12,22 +12,20 @@ class CodeGeneratorController < ApplicationController
   private
 
   def generate_code(description)
-    response = openai_request(description)
-    if response.success?
-      begin
+    begin
+      response = openai_request(description)
+      if response.success?
         return response['choices'].first['text'].strip
-      rescue StandardError => e
-        # Handle parsing error or other unexpected issues
-        Rails.logger.error "Error parsing response: #{e.message}"
-        render json: { "error": "An unexpected error occurred while processing the response." }, status: :internal_server_error
+      else
+        error_message = response.parsed_response['error']&.dig('message') || "Unknown error"
+        Rails.logger.error "OpenAI API error: #{error_message}"
+        render json: { "error": error_message }, status: :bad_request
       end
-    else
-      error_message = response.parsed_response['error']&.dig('message') || "Unknown error"
-      Rails.logger.error "OpenAI API error: #{error_message}"
-      render json: { "error": error_message }, status: :bad_request
+    rescue StandardError => e
+      Rails.logger.error "Error generating code: #{e.message}"
+      render json: { "error": "An unexpected error occurred while generating the code." }, status: :internal_server_error
     end
   end
-  
 
   def openai_request(description)
     begin
