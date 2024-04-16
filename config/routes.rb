@@ -5,4 +5,5 @@ Rails.application.routes.draw do
   get 'code_generator/new'
   post 'code_generator/generate'
   root 'code_generator#new'
+  post 'code_generator/gemini_pro_request', to: "code_generator#gemini_pro_request"
 end
