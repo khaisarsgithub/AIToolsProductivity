@@ -13,6 +13,9 @@ class CodeGeneratorController < ApplicationController
     @generated_code = generate_code(@description)
   end
 
+  def summary
+    return "This is a summary of the code generator controller"
+  end
   private
 
   ##
