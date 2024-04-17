@@ -4,6 +4,8 @@ require 'rails_helper'
 
 RSpec.describe CodeGeneratorController, type: :controller do
   # OpenAI API Request
+  # This block of code is a test suite written using RSpec for the `CodeGeneratorController` in a Ruby
+  # on Rails application. Let's break down what each part of the test suite is doing:
   describe "POST #generate" do
     context "with valid description" do
       let(:valid_description) { "Test description" }
@@ -55,6 +57,52 @@ RSpec.describe CodeGeneratorController, type: :controller do
     end
   end
 
+  # The code snippet you provided is a test suite written using RSpec for the `#openai_request` method
+  # in the `CodeGeneratorController`. This test suite is responsible for testing the behavior of the
+  # `#openai_request` method under different scenarios.
+  describe '#openai_request' do
+    let(:description) { 'Generate a Ruby class' }
+
+    context 'when API request is successful' do
+      before do
+        allow(HTTParty).to receive(:post).and_return(double(success?: true)) 
+      end
+
+      it 'makes a POST request to OpenAI API' do
+        expect(HTTParty).to receive(:post)
+        subject.openai_request(description)
+      end
+
+      it 'uses the correct headers' do
+        expect(HTTParty).to receive(:post)
+          .with(anything, hash_including({
+            'Content-Type' => 'application/json',
+            'Authorization' => "Bearer #{ENV['OPENAI_API_KEY']}"
+          }))
+        subject.openai_request(description)
+      end
+
+      it 'uses the correct request body' do
+        expect(HTTParty).to receive(:post)
+          .with(anything, hash_including({
+            model: 'gpt-3.5-turbo',
+            prompt: "Generate code for: #{description}",
+            max_tokens: 100
+          }))
+        subject.openai_request(description)
+      end
+    end
+
+    context 'when API request fails' do
+      before do
+        allow(HTTParty).to receive(:post).and_raise(StandardError)
+      end
+
+      it 'rescues from error' do
+        expect { subject.openai_request(description) }.not_to raise_error
+      end
+    end
+  end
 
   # Written with github copilot
   

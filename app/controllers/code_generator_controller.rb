@@ -13,9 +13,9 @@ class CodeGeneratorController < ApplicationController
     @generated_code = generate_code(@description)
   end
 
-  def summary
-    return "This is a summary of the code generator controller"
-  end
+  # def summary
+  #   return "This is a summary of the code generator controller"
+  # end
   private
 
   ##
@@ -33,7 +33,8 @@ class CodeGeneratorController < ApplicationController
   # successful. If there is an error during the request or an unexpected error occurs, it logs the
   # error message and returns a JSON response with an error message and the corresponding HTTP status
   # code.
-  def generate_code(description)
+  
+def generate_code(description)
     begin
       response = openai_request(description)
       if response.success?
